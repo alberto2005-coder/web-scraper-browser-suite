@@ -1,23 +1,23 @@
 
-const SELECTOR_CONTENEDOR_PRODUCTO = '.clase-contenedor-producto'; 
-const SELECTOR_NOMBRE = '.clase-nombre-articulo';
-const SELECTOR_PRECIO = '.clase-precio-final';
-const SELECTOR_URL_IMG = '.clase-imagen-producto';
+const SELECTOR_CONTENEDOR_PRODUCTO = 'article.thread';
+const SELECTOR_NOMBRE = '.js-thread-title';
+const SELECTOR_PRECIO = '.thread-price';
+const SELECTOR_URL_IMG = 'img.thread-image';
 
 
 function normalizePrice(text) {
     if (!text) return 0;
     const normalized = text
         .replace(/[^\d.,]/g, '')
-        .replace(/\./g, '')      
-        .replace(/,/g, '.');     
+        .replace(/\./g, '')
+        .replace(/,/g, '.');
     return parseFloat(normalized) || 0;
 }
 
 function scrapeAndSave() {
     const productos = [];
     const contenedores = document.querySelectorAll(SELECTOR_CONTENEDOR_PRODUCTO);
-    
+
     console.log(`[Scraper] Encontrados ${contenedores.length} posibles productos.`);
 
     contenedores.forEach((contenedor, index) => {
@@ -25,30 +25,30 @@ function scrapeAndSave() {
             const articuloEl = contenedor.querySelector(SELECTOR_NOMBRE);
             const precioEl = contenedor.querySelector(SELECTOR_PRECIO);
             const imgEl = contenedor.querySelector(SELECTOR_URL_IMG);
-            
+
             const articulo = articuloEl ? articuloEl.innerText.trim() : `Producto sin nombre ${index}`;
             const precioTexto = precioEl ? precioEl.innerText.trim() : '0';
             const url_img = imgEl ? (imgEl.src || imgEl.getAttribute('data-src') || '') : '';
             const url = window.location.href;
 
             const producto = {
-                cod_unico: `${Date.now()}-${index}`, 
-                
-                gtin: null, 
-                articulo: articulo, 
-                marca: null, 
-                fabricante: null, 
-                modelo: null, 
-                precio: normalizePrice(precioTexto), 
-                descuento: null, 
-                fecha_limite: null, 
-                url: url, 
+                cod_unico: `${Date.now()}-${index}`,
+
+                gtin: null,
+                articulo: articulo,
+                marca: null,
+                fabricante: null,
+                modelo: null,
+                precio: normalizePrice(precioTexto),
+                descuento: null,
+                fecha_limite: null,
+                url: url,
                 url_img: url_img,
-                sitio_web: window.location.hostname 
+                sitio_web: window.location.hostname
             };
-            
+
             productos.push(producto);
-            
+
         } catch (error) {
             console.error(`[Scraper] Error al procesar el producto ${index}:`, error);
         }
